@@ -40,17 +40,16 @@ jobs:
         with:
           java-version: 1.8
 
-      - name: Grant rights
-        run: chmod +x build.gradle
+      - name: Build debug apk
+        run: ./gradlew clean assembleDebug
         
-      - name: Build with Gradle
-        id: build
-        run: ./gradlew build
-
         
-      - name: Grant Gradlew rights
-        run: chmod +x gradlew
-        
-      - name: Build Release AAB
-        id: buildRelease
-        run: ./gradlew assemble
+      - name: Create release and upload apk
+        uses: underwindfall/create-release-with-debugapk@v2.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GB_TOKEN }}
+        with:
+          tag_name: v1.0.0
+          asset_path: app/build/outputs/apk/debug/app-debug.apk
+          asset_name: Example.apk
+          asset_content_type: application/zip
